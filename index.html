@@ -4,9 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- para permitir exibição em IOS de acordo com documentação do a-frame-->
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <!-- Bibliotecas que precisam ser importadas para usar Mindar com A-frame -->
     <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/dist/mindar-image.prod.js"></script>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/dist/mindar-image-aframe.prod.js"></script>
@@ -19,22 +17,20 @@
     <!-- Scanner Customizado -->
     <div id="example-scanning-overlay" class="hidden">
       <div class="inner">
-      <!--   <img src="./assets/target/dev.jpg" /> -->
         <div class="scanline"></div>
       </div>
     </div>
 
     <!-- Construir a cena -->
-      <a-scene
-        mindar-image="imageTargetSrc: ./assets/target/target.mind; filterMinCF: 0.000; filterBeta: 1; stabilize: true; uiScanning: #example-scanning-overlay"
-        color-space="sRGB"
-        renderer="colorManagement: true, physicallyCorrectLights"
-        vr-mode-ui="enabled: false"
-        device-orientation-permission-ui="enabled: false"
-      >
+    <a-scene
+      mindar-image="imageTargetSrc: ./assets/target/target.mind; filterMinCF: 0.000; filterBeta: 1; stabilize: true; uiScanning: #example-scanning-overlay"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+    >
       <!-- Carregamos os assets que serão usados na experiencia -->
       <a-assets>
-       <!-- <img id="perfil" src="./assets/target/dev.png" />-->
         <video id="video" src="./assets/videos/teste.mp4" crossorigin="anonymous" playsinline></video>
         <img id="icon_github" src="./assets/images/icons/icon_github.png" />
         <img id="icon_linkedin" src="./assets/images/icons/icon_linkedin.png" />
@@ -47,33 +43,28 @@
         position="0 0 0"
         look-controls="enabled: false"
         cursor="fuse: false; rayOrigin: mouse;"
-        raycaster=" far: 10000; objects: .clickable;"
+        raycaster="far: 10000; objects: .clickable;"
       ></a-camera>
 
+      <!-- Alvo do MindAR -->
       <a-entity mindar-image-target="targetIndex: 0">
-        <!-- Imagens do cartão e da pessoa -->
-        <a-entity>
-             <!-- Exibir o vídeo -->
-            <a-video
-              src="#video"
-              position="-2.0 0.00427 -0.07243"
-              width="0.9"
-              height="1.5"
-              autoplay
-              loop
-            ></a-video>
-        <!--   <a-image
-            id="foto-perfil"
-            position="0.850 0.0 -0.04426"
-            height="0.15"
-            width="0.15"
-            src="#perfil"
-            scale="4.2 4.2 4.2"
-          ></a-image>
-          -->
-        </a-entity>
+        <!-- Vídeo -->
+        <a-video
+          id="video-entity"
+          src="#video"
+          position="-2.0 0.00427 -0.07243"
+          width="0.9"
+          height="1.5"
+          autoplay
+          loop
+        ></a-video>
 
-     
+        <!-- Linha tracejada -->
+        <a-entity
+          id="dashed-line"
+          line="start: 0 0 0; end: -2.0 0.00427 -0.07243; color: red; opacity: 0.7"
+          material="shader: line; dashSize: 0.1; gapSize: 0.1"
+        ></a-entity>
 
         <!-- Botões -->
         <a-entity position="0.065 -0.002 -0.004">
@@ -85,8 +76,7 @@
             width="0.15"
             src="#icon_github"
             animation="property: scale; to: 1.1 1.1 1.1; easing: easeInOutQuad; loop: true; dir: alternate"
-          >
-          </a-image>
+          ></a-image>
 
           <a-image
             id="linkedin-button"
@@ -96,8 +86,8 @@
             width="0.15"
             src="#icon_linkedin"
             animation="property: scale; to: 1.1 1.1 1.1; easing: easeInOutQuad; loop: true; dir: alternate"
-          >
-          </a-image>
+          ></a-image>
+
           <a-image
             id="twitter-button"
             class="clickable"
@@ -106,8 +96,8 @@
             width="0.15"
             src="#icon_twitter"
             animation="property: scale; to: 1.1 1.1 1.1; easing: easeInOutQuad; loop: true; dir: alternate"
-          >
-          </a-image>
+          ></a-image>
+
           <a-image
             id="email-button"
             class="clickable"
@@ -116,8 +106,8 @@
             width="0.15"
             src="#icon_email"
             animation="property: scale; to: 1.1 1.1 1.1; easing: easeInOutQuad; loop: true; dir: alternate"
-          >
-          </a-image>
+          ></a-image>
+
           <a-image
             id="web-button"
             class="clickable"
@@ -126,8 +116,7 @@
             width="0.15"
             src="#icon_web"
             animation="property: scale; to: 1.1 1.1 1.1; easing: easeInOutQuad; loop: true; dir: alternate"
-          >
-          </a-image>
+          ></a-image>
         </a-entity>
       </a-entity>
     </a-scene>
@@ -139,7 +128,7 @@
         video.play();
       });
 
-      // Pausar o vídeo quando o alvo não está mais detectado
+      // Quando o alvo é perdido, o vídeo permanece na tela, apenas pausa
       document.querySelector('a-scene').addEventListener('targetLost', (event) => {
         const video = document.querySelector('#video');
         video.pause();
