@@ -10,33 +10,26 @@
     <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/dist/mindar-image.prod.js"></script>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/dist/mindar-image-aframe.prod.js"></script>
-    <script defer src="./assets/scripts/index.js"></script>
     <title>EBDC</title>
-    <link rel="stylesheet" href="assets/styles/index.css" />
+    <style>
+      body { margin: 0; }
+      a-scene { width: 100vw; height: 100vh; }
+    </style>
   </head>
 
   <body>
-    <!-- Scanner Customizado -->
-    <div id="example-scanning-overlay" class="hidden">
-      <div class="inner">
-        <div class="scanline"></div>
-      </div>
-    </div>
-
-    <!-- Construir a cena -->
     <a-scene
-      mindar-image="imageTargetSrc: ./assets/target/target.mind; filterMinCF: 0.000; filterBeta: 1; stabilize: true; uiScanning: #example-scanning-overlay"
+      mindar-image="imageTargetSrc: ./assets/target/target.mind; filterMinCF: 0.000; filterBeta: 1; stabilize: true;"
       color-space="sRGB"
       renderer="colorManagement: true, physicallyCorrectLights"
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
     >
-      <!-- Carregamos os assets que serão usados na experiencia -->
       <a-assets>
         <video id="video" src="./assets/videos/teste.mp4" crossorigin="anonymous" playsinline></video>
       </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster=" far: 10000; objects: .clickable;"></a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <!-- Entidade que mantém o conteúdo visível -->
       <a-entity mindar-image-target="targetIndex: 0">
@@ -44,15 +37,13 @@
         <a-video
           id="video-entity"
           src="#video"
-          position="-2.0 0.00427 -0.07243"
-          width="0.9"
-          height="1.5"
+          position="0 0 -3"
+          width="4"
+          height="2.25"
           autoplay
           loop
+          visible="false"
         ></a-video>
-
-        <!-- Linha conectando a imagem e o vídeo -->
-        <a-entity id="line" line="start: 0 1 0; end: -2.0 0.00427 -0.07243; color: red"></a-entity>
       </a-entity>
 
     </a-scene>
@@ -65,15 +56,16 @@
         if (!targetDetected) {
           targetDetected = true;  // Marca que o alvo foi detectado
 
-          // Tocar o vídeo ao detectar o alvo pela primeira vez
-          const video = document.querySelector('#video');
-          video.play();
+          // Mostrar e começar a tocar o vídeo ao detectar o alvo
+          const videoEntity = document.querySelector('#video-entity');
+          videoEntity.setAttribute('visible', 'true');
+          videoEntity.play(); // Começa a tocar o vídeo
         }
       });
 
-      // Não fazer nada ao perder o alvo para manter o vídeo visível
+      // Manter o vídeo visível mesmo se o alvo for perdido
       document.querySelector('a-scene').addEventListener('targetLost', (event) => {
-        // Nada a ser feito, queremos que o conteúdo continue visível
+        // O vídeo continua visível
       });
     </script>
   </body>
