@@ -19,137 +19,69 @@
     <!-- Scanner Customizado -->
     <div id="example-scanning-overlay" class="hidden">
       <div class="inner">
-      <!--   <img src="./assets/target/dev.jpg" /> -->
         <div class="scanline"></div>
       </div>
     </div>
 
     <!-- Construir a cena -->
-      <a-scene
-        mindar-image="imageTargetSrc: ./assets/target/target.mind; filterMinCF: 0.000; filterBeta: 1; stabilize: true; uiScanning: #example-scanning-overlay"
-        color-space="sRGB"
-        renderer="colorManagement: true, physicallyCorrectLights"
-        vr-mode-ui="enabled: false"
-        device-orientation-permission-ui="enabled: false"
-      >
+    <a-scene
+      mindar-image="imageTargetSrc: ./assets/target/target.mind; filterMinCF: 0.000; filterBeta: 1; stabilize: true; uiScanning: #example-scanning-overlay"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+    >
       <!-- Carregamos os assets que serão usados na experiencia -->
       <a-assets>
-       <!-- <img id="perfil" src="./assets/target/dev.png" />-->
         <video id="video" src="./assets/videos/teste.mp4" crossorigin="anonymous" playsinline></video>
-        <img id="icon_github" src="./assets/images/icons/icon_github.png" />
-        <img id="icon_linkedin" src="./assets/images/icons/icon_linkedin.png" />
-        <img id="icon_twitter" src="./assets/images/icons/icon_twitter.png" />
-        <img id="icon_web" src="./assets/images/icons/icon_web.png" />
-        <img id="icon_email" src="./assets/images/icons/icon_email.png" />
       </a-assets>
 
-      <a-camera
-        position="0 0 0"
-        look-controls="enabled: false"
-        cursor="fuse: false; rayOrigin: mouse;"
-        raycaster=" far: 10000; objects: .clickable;"
-      ></a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster=" far: 10000; objects: .clickable;"></a-camera>
 
-      <a-entity mindar-image-target="targetIndex: 0">
-        <!-- Imagens do cartão e da pessoa -->
-        <a-entity>
-             <!-- Exibir o vídeo -->
-            <a-video
-              src="#video"
-              position="-2.0 0.00427 -0.07243"
-              width="0.9"
-              height="1.5"
-              autoplay
-              loop
-            ></a-video>
-        <!--   <a-image
-            id="foto-perfil"
-            position="0.850 0.0 -0.04426"
-            height="0.15"
-            width="0.15"
-            src="#perfil"
-            scale="4.2 4.2 4.2"
-          ></a-image>
-          -->
-        </a-entity>
+      <!-- Entidade que mantém o conteúdo visível -->
+      <a-entity id="content" position="0 0 0">
+        <!-- Exibir o vídeo -->
+        <a-video
+          id="video-entity"
+          src="#video"
+          position="-2.0 0.00427 -0.07243"
+          width="0.9"
+          height="1.5"
+          autoplay
+          loop
+          visible="false"
+        ></a-video>
 
-        <a-entity line="start: 0 1 0; end: -2.0 0.00427 -0.07243; color: red"></a-entity>
-
-        <!-- Botões -->
-        <a-entity position="0.065 -0.002 -0.004">
-          <a-image
-            id="github-button"
-            class="clickable"
-            position="-0.52361 -0.4575 -0.04426"
-            height="0.15"
-            width="0.15"
-            src="#icon_github"
-            animation="property: scale; to: 1.1 1.1 1.1; easing: easeInOutQuad; loop: true; dir: alternate"
-          >
-          </a-image>
-
-          <a-image
-            id="linkedin-button"
-            class="clickable"
-            position="-0.30772 -0.4575 -0.04426"
-            height="0.15"
-            width="0.15"
-            src="#icon_linkedin"
-            animation="property: scale; to: 1.1 1.1 1.1; easing: easeInOutQuad; loop: true; dir: alternate"
-          >
-          </a-image>
-          <a-image
-            id="twitter-button"
-            class="clickable"
-            position="-0.07819 -0.4575 -0.04426"
-            height="0.15"
-            width="0.15"
-            src="#icon_twitter"
-            animation="property: scale; to: 1.1 1.1 1.1; easing: easeInOutQuad; loop: true; dir: alternate"
-          >
-          </a-image>
-          <a-image
-            id="email-button"
-            class="clickable"
-            position="0.16583 -0.4575 -0.04426"
-            height="0.15"
-            width="0.15"
-            src="#icon_email"
-            animation="property: scale; to: 1.1 1.1 1.1; easing: easeInOutQuad; loop: true; dir: alternate"
-          >
-          </a-image>
-          <a-image
-            id="web-button"
-            class="clickable"
-            position="0.40564 -0.4575 -0.04426"
-            height="0.15"
-            width="0.15"
-            src="#icon_web"
-            animation="property: scale; to: 1.1 1.1 1.1; easing: easeInOutQuad; loop: true; dir: alternate"
-          >
-          </a-image>
-        </a-entity>
+        <!-- Linha conectando a imagem e o vídeo -->
+        <a-entity id="line" line="start: 0 1 0; end: -2.0 0.00427 -0.07243; color: red" visible="false"></a-entity>
       </a-entity>
+
     </a-scene>
 
     <script>
       let targetDetected = false;
-    
+
+      // Detectar o alvo
       document.querySelector('a-scene').addEventListener('targetFound', (event) => {
         if (!targetDetected) {
           targetDetected = true;  // Marca que o alvo foi detectado
-    
+
+          // Exibir o vídeo e a linha
+          const videoEntity = document.querySelector('#video-entity');
+          const lineEntity = document.querySelector('#line');
+          videoEntity.setAttribute('visible', 'true');
+          lineEntity.setAttribute('visible', 'true');
+
           // Tocar o vídeo ao detectar o alvo pela primeira vez
           const video = document.querySelector('#video');
           video.play();
         }
       });
-    
-      // Desabilita o evento 'targetLost' para que o conteúdo não suma
+
+      // Não fazer nada ao perder o alvo para manter o vídeo visível
       document.querySelector('a-scene').addEventListener('targetLost', (event) => {
-        // Nada a ser feito, porque queremos que o conteúdo continue visível
+        // Nada a ser feito, queremos que o conteúdo continue visível
       });
     </script>
-    
   </body>
 </html>
