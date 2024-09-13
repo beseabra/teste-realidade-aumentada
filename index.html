@@ -133,17 +133,23 @@
     </a-scene>
 
     <script>
-      // Garantir que o vídeo comece a tocar quando o alvo é detectado
+      let targetDetected = false;
+    
       document.querySelector('a-scene').addEventListener('targetFound', (event) => {
-        const video = document.querySelector('#video');
-        video.play();
+        if (!targetDetected) {
+          targetDetected = true;  // Marca que o alvo foi detectado
+    
+          // Tocar o vídeo ao detectar o alvo pela primeira vez
+          const video = document.querySelector('#video');
+          video.play();
+        }
       });
-
-      // Pausar o vídeo quando o alvo não está mais detectado
+    
+      // Desabilita o evento 'targetLost' para que o conteúdo não suma
       document.querySelector('a-scene').addEventListener('targetLost', (event) => {
-        const video = document.querySelector('#video');
-        video.pause();
+        // Nada a ser feito, porque queremos que o conteúdo continue visível
       });
     </script>
+    
   </body>
 </html>
