@@ -8,7 +8,6 @@
     <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/dist/mindar-image.prod.js"></script>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/dist/mindar-image-aframe.prod.js"></script>
-    <script defer src="./assets/scripts/index.js"></script>
     <title>EBDC</title>
     <link rel="stylesheet" href="assets/styles/index.css" />
   </head>
@@ -59,10 +58,9 @@
           loop
         ></a-video>
 
-        <!-- Linha tracejada -->
+        <!-- Linha tracejada conectando a câmera ao vídeo -->
         <a-entity
-          id="dashed-line"
-          line="start: 0 0 0; end: -2.0 0.00427 -0.07243; color: red; opacity: 0.7"
+          line="start: 0 0 0; end: -2 0.00427 -0.07243; color: red"
           material="shader: line; dashSize: 0.1; gapSize: 0.1"
         ></a-entity>
 
@@ -128,7 +126,7 @@
         video.play();
       });
 
-      // Quando o alvo é perdido, o vídeo permanece na tela, apenas pausa
+      // Não remover o vídeo ao perder o alvo, apenas pausar
       document.querySelector('a-scene').addEventListener('targetLost', (event) => {
         const video = document.querySelector('#video');
         video.pause();
