@@ -49,11 +49,10 @@
           height="1.5"
           autoplay
           loop
-          visible="false"
         ></a-video>
 
         <!-- Linha conectando a imagem e o vídeo -->
-        <a-entity id="line" line="start: 0 1 0; end: -2.0 0.00427 -0.07243; color: red" visible="false"></a-entity>
+        <a-entity id="line" line="start: 0 1 0; end: -2.0 0.00427 -0.07243; color: red"></a-entity>
       </a-entity>
 
     </a-scene>
@@ -65,12 +64,6 @@
       document.querySelector('a-scene').addEventListener('targetFound', (event) => {
         if (!targetDetected) {
           targetDetected = true;  // Marca que o alvo foi detectado
-
-          // Exibir o vídeo e a linha
-          const videoEntity = document.querySelector('#video-entity');
-          const lineEntity = document.querySelector('#line');
-          videoEntity.setAttribute('visible', 'true');
-          lineEntity.setAttribute('visible', 'true');
 
           // Tocar o vídeo ao detectar o alvo pela primeira vez
           const video = document.querySelector('#video');
