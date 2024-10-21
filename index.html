@@ -1,45 +1,100 @@
-<html>
-  <head>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
-  </head>
-  <body style='margin: 0; overflow: hidden;'>
-    <a-scene embedded arjs>
-      <!-- Definir câmera -->
-      <a-entity camera></a-entity>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebXR AR Demo</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+</head>
+<body>
+  <a-scene embedded arjs>
+    <!-- Definir câmera -->
+    <a-entity camera></a-entity>
 
-      <!-- IMAGEM 1 - Exibe o Vídeo -->
-      <a-marker preset="custom" type="pattern" url="assets/target/target1.mind">
-        <a-video src="#videoFile" width="4" height="2" position="0 1 0"></a-video>
-      </a-marker>
+    <!-- Vídeo (Imagem 1) -->
+    <a-marker preset="custom" type="pattern" url="assets/target/target1.mind">
+      <a-video
+        src="#videoFile"
+        width="4"
+        height="2"
+        position="-4 3 -4"
+        autoplay
+        loop
+      ></a-video>
+    </a-marker>
 
-      <!-- IMAGEM 2 - Exibe Carrossel de Imagens -->
-      <a-marker preset="custom" type="pattern" url="assets/target/target2.mind">
-        <a-entity id="carousel" geometry="primitive: plane; height: 2; width: 3" material="src: #image1" position="0 1 0">
-        </a-entity>
-      </a-marker>
+    <!-- Carrossel de Fotos (Imagem 2) -->
+    <a-marker preset="custom" type="pattern" url="assets/target/target2.mind">
+      <a-entity id="carousel" position="-3.5 -0.7 -4">
+        <a-plane id="photo1" src="src/images/businessCard.png" height="1.5" width="1.5"></a-plane>
+        <a-plane id="photo2" src="src/images/dev.jpg" height="1.5" width="1.5" visible="false"></a-plane>
+      </a-entity>
+    </a-marker>
 
-      <!-- IMAGEM 3 - Exibe Imagem Única -->
-      <a-marker preset="custom" type="pattern" url="assets/target/target3.mind">
-        <a-image src="src/images/profile/perfil.png" width="2" height="2" position="0 1 0"></a-image>
-      </a-marker>
+    <!-- Uma imagem fixa (Imagem 3) -->
+    <a-marker preset="custom" type="pattern" url="assets/target/target3.mind">
+      <a-plane
+        src="src/images/perfil.png"
+        height="2"
+        width="2"
+        position="3 3 -4"
+      ></a-plane>
+    </a-marker>
 
-      <!-- IMAGEM 4 - Exibe Quiz Interativo -->
-      <a-marker preset="custom" type="pattern" url="assets/target/target4.mind">
-        <a-entity position="0 1 0">
-          <a-text value="Pergunta: Qual é a capital da França?" position="0 0.5 0"></a-text>
-          <a-text value="A- Berlim" position="-1 0 0" color="red"></a-text>
-          <a-text value="B- Paris" position="0 0 0" color="green"></a-text>
-          <a-text value="C- Roma" position="1 0 0" color="blue"></a-text>
-        </a-entity>
-      </a-marker>
-    </a-scene>
+    <!-- Caixa de Quiz (Imagem 4) -->
+    <a-marker preset="custom" type="pattern" url="assets/target/target4.mind">
+      <a-box
+        id="quizBox"
+        position="1.5 0.5 -2"
+        depth="0.5"
+        height="0.5"
+        width="0.5"
+        color="#4CC3D9"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 5000"
+        event-set__enter="_event: mouseenter; color: #7CFC00"
+        event-set__leave="_event: mouseleave; color: #4CC3D9"
+        onclick="checkAnswer(prompt('Digite sua resposta:'))" <!-- Aqui é onde capturamos a resposta -->
+      >
+        <a-text id="quizText" value="Qual é a capital da França?" position="-0.25 0 0.25" color="#000"></a-text>
+      </a-box>
+    </a-marker>
 
-    <!-- Arquivo de Vídeo -->
-    <video id="videoFile" src="assets/video/teste.mp4" autoplay loop style="display: none;"></video>
+    <!-- Adicionando os ativos -->
+    <a-assets>
+      <video id="videoFile" autoplay loop src="assets/videos/teste.mp4"></video>
+    </a-assets>
+  </a-scene>
 
-    <!-- Carrossel de Imagens -->
-    <img id="image1" src="src/images/profile/perfil.png" style="display: none;">
-    <!-- Adicionar mais imagens ao carrossel conforme necessário -->
-  </body>
+  <script>
+    // Carrossel de Fotos
+    let currentPhoto = 0;
+    const photos = document.querySelectorAll('#carousel a-plane');
+
+    setInterval(() => {
+      photos[currentPhoto].setAttribute('visible', 'false');
+      currentPhoto = (currentPhoto + 1) % photos.length;
+      photos[currentPhoto].setAttribute('visible', 'true');
+    }, 3000); // Troca de foto a cada 3 segundos
+
+    // Quiz Interativo
+    const questions = [
+      { question: "Qual é a capital da França?", answer: "Paris" },
+      { question: "Qual é a capital do Brasil?", answer: "Brasília" },
+      // Adicione mais perguntas conforme necessário
+    ];
+    let currentQuestion = 0;
+
+    function checkAnswer(userAnswer) {
+      if (userAnswer.toLowerCase() === questions[currentQuestion].answer.toLowerCase()) {
+        currentQuestion = (currentQuestion + 1) % questions.length;
+        document.getElementById('quizText').setAttribute('value', questions[currentQuestion].question);
+        document.getElementById('quizBox').setAttribute('animation', 'property: rotation; to: 0 360 0; loop: false; dur: 500');
+        // Aqui você pode adicionar uma animação de rotação ou outro efeito
+      } else {
+        alert("Resposta incorreta. Tente novamente!");
+      }
+    }
+  </script>
+</body>
 </html>
